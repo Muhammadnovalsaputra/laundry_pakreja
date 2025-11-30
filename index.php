@@ -22,6 +22,7 @@ if (isset($_POST['login'])) {
             $_SESSION['ID'] = $user['id'];
             $_SESSION['NAME'] = $user['name'];
             $_SESSION['LEVEL_ID'] = $user['level_id'];
+            $_SESSION['PICTURE'] = $user['picture'];
             header("location:home.php");
         }
     } else {

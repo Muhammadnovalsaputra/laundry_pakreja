@@ -108,7 +108,7 @@ checkLogin();
             <!-- You can delete the links only if you purchased the pro version. -->
             <!-- Licensing information: https://bootstrapmade.com/license/ -->
             <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-            Designed by <a href="https://bootstrapmade.com/">PPKD Jakarta Pusat</a>
+            Designed by <a href="https://bootstrapmade.com/">Laundry</a>
         </div>
     </footer><!-- End Footer -->
 

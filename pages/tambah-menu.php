@@ -8,8 +8,8 @@ if (isset($_POST['simpan'])) {
     $name = $_POST['name'];
     $link = $_POST['link'];
     $icon = $_POST['icon'];
-    $order = $_POST['order'];
-    $insert = mysqli_query($config, "INSERT INTO menus (name, icon, link, `order`) VALUES 
+    $orders = $_POST['orders'];
+    $insert = mysqli_query($config, "INSERT INTO menus (name, icon, link, `orders`) VALUES 
     ('$name','$icon','$link','$order')");
 
     header("Location:?page=menu");
@@ -18,8 +18,8 @@ if (isset($_POST['update'])) {
     $name = $_POST['name'];
     $link = $_POST['link'];
     $icon = $_POST['icon'];
-    $order = $_POST['order'];
-    $update = mysqli_query($config, "UPDATE menus SET `order`='$order', name='$name', icon='$icon',
+    $orders = $_POST['orders'];
+    $update = mysqli_query($config, "UPDATE menus SET `orders`='$orders', name='$name', icon='$icon',
      link='$link' WHERE id = $id");
 
     header('location:?page=menu');

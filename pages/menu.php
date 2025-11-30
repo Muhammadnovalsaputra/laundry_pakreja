@@ -1,5 +1,5 @@
 <?php
-$query = mysqli_query($config, "SELECT * FROM menus ORDER BY `order` ASC");
+$query = mysqli_query($config, "SELECT * FROM menus ORDER BY orders ASC");
 $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 if (isset($_GET['delete'])) {
@@ -33,7 +33,7 @@ if (isset($_GET['delete'])) {
                             <td><?php echo $value['name'] ?></td>
                             <td><?php echo $value['icon'] ?></td>
                             <td><?php echo $value['link'] ?></td>
-                            <td><?php echo $value['order'] ?></td>
+                            <td><?php echo $value['orders'] ?></td>
                             <td>
                                 <a class="btn btn-success btn-sm" href="?page=tambah-menu&edit=<?php echo $value['id'] ?>">
                                     <i class="bi bi-pencil"></i>

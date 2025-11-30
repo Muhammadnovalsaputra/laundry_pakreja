@@ -28,7 +28,8 @@ if (isset($_GET['delete'])) {
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Data Order</h3>
-                    <div class="d-flex justify-content-end p-2">
+                    <div class="d-flex justify-content-between p-2">
+                        <a href="pos/report.php" class="btn btn-primary">Report</a>
                         <a href="pos/add-order.php" class="btn btn-primary">Add Order</a>
                     </div>
                     <table class="table table-bordered">

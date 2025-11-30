@@ -24,19 +24,17 @@ if (isset($_GET['payment'])) {
     // transaction
     mysqli_begin_transaction($config);
     $data = json_decode(file_get_contents('php://input'), true);
-
+ 
     $cart = $data["cart"];
-
-
+    $orderCode = $data['order_code'];
+    $subtotal  = $data['subtotal'];
     $tax = $data['tax'];
     $orderAmounth = $data['grandTotal'];
-    $orderCode = $data['order_code'];
-    $end_date = $data['end_date'];
     $customer_id = $data['customer_id'];
-    $orderChange = 0;
-    $orderPay = 0;
+    $end_date = $data['end_date'];
+    $orderPay = $data['pay'];
+    $orderChange = $data['change'];
     $orderStatus = 1;
-    $subtotal  = $data['subtotal'];
 
     try {
         $insertOrder = mysqli_query($config, "INSERT INTO trans_orders (order_code, order_end_date,  
@@ -246,14 +244,13 @@ $order_code = "ORD-" . date('dmy') . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                             <input type="hidden" id="total_value">
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span>Pay :</span>
-                            <span id="total">Rp. 0.0</span>
-                            <input type="number" class="form-control w-50" id="pay" placeholder="Enter The Payment amount" oninput="calculateChange()">
+                        <span>Pay :</span>
+                        <input type="number" id="pay" class="form-control w-50" placeholder="Enter the amount" oninput="calculateChange()" style="background-color: #BBDEFB;">
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span>Change :</span>
-                            <span id="total">Rp. 0.0</span>
-                            <input type="number" class="form-control" id="change" readonly>
+                            <span>Change:</span>
+                            <span ></span>
+                            <input type="number" class="form-control border-0 bg-body-tertiary" id="change" readonly>
                         </div>
                     </div>
                     <div class="row g-2">
@@ -278,11 +275,6 @@ $order_code = "ORD-" . date('dmy') . str_pad($nextId, 4, "0", STR_PAD_LEFT);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-
-
-    <script>
-        const products = <?php echo json_encode($fetchProducts); ?>
-    </script>
 
     <script src="../assets/js/reza.js"></script>
 

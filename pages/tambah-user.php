@@ -13,8 +13,20 @@ if (isset($_POST['update'])) {
     // $_POST
     $name  = $_POST['name'];
     $email = $_POST['email'];
+    
     $level_id = $_POST['level_id'];
     $password = sha1($_POST['password']);
+    $fileName = $rowEdit['picture']; // default: pakai foto lama
+    if (!empty($_FILES['picture']['name'])) {
+        $fileName = time() . '-' . $_FILES['picture']['name'];
+        move_uploaded_file($_FILES['picture']['tmp_name'], "assets/uploads/" . $fileName);
+
+        // hapus foto lama jika ada
+        if (!empty($rowEdit['picture']) && file_exists("assets/uploads/" . $rowEdit['picture'])) {
+            unlink("assets/uploads/" . $rowEdit['picture']);
+        }
+    }
+
 
     if ($_POST['password']) {
         $query = mysqli_query($config, "UPDATE users
@@ -36,14 +48,15 @@ if (isset($_POST['simpan'])) {
     $level_id = $_POST['level_id'];
     $password = sha1($_POST['password']);
 
+
     $query = mysqli_query($config, "INSERT INTO users (name, email, password, level_id) 
         VALUES('$name','$email','$password','$level_id')");
 
-    // print_r($query);
-    // die;
     if ($query) {
         header("location:?page=user&tambah=berhasil");
     }
+
+
 }
 
 ?>
@@ -56,7 +69,7 @@ if (isset($_POST['simpan'])) {
                 <h3 class="card-title">
                     <?php echo isset($_GET['edit']) ? 'Edit' : 'Add' ?> User
                 </h3>
-                <form action="#" method="post">
+                <form action="#" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="" class="form-label">Level Name *</label>
                         <select name="level_id" id="" class="form-control">
