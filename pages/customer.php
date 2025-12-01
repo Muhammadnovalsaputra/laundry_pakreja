@@ -12,10 +12,10 @@ $customers = mysqli_fetch_all($query, MYSQLI_ASSOC);
 // $_GET 
 // isset, empty
 if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $delete = mysqli_query($config, "DELETE FROM customers WHERE id = $id");
-    // redirect
-    header("location:?page=customer&hapus=berhasil");
+  $id = $_GET['delete'];
+  $delete = mysqli_query($config, "DELETE FROM customers WHERE id = $id");
+  // redirect
+  header("location:?page=customer&hapus=berhasil");
 }
 ?>
 
@@ -28,11 +28,9 @@ if (isset($_GET['delete'])) {
           <a href="?page=tambah-customer" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Add Customer
           </a>
-          <a href="?page=customer-restore" class="btn btn-primary">
-            <i class="bi bi-arrow-counterclockwise"></i> Restore Customer
-          </a>
+
         </div>
-        <table class="table table-bordered table-striped datatable">
+        <table class="table table-bordered table-striped ">
           <thead>
             <tr>
               <th>No</th>

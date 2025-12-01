@@ -7,7 +7,7 @@
 
 $query = mysqli_query($config, "SELECT l.name as level_name, u.* FROM users u  
 LEFT JOIN levels l ON l.id = u.level_id 
-ORDER BY u.id DESC"); 
+ORDER BY u.id DESC");
 $users = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 // disini parameter delete
@@ -31,7 +31,7 @@ if (isset($_GET['delete'])) {
                         <i class="bi bi-plus-circle"></i> Add User
                     </a>
                 </div>
-                <table class="table table-bordered table-striped datatable">
+                <table class="table table-bordered table-striped ">
                     <thead>
                         <tr>
                             <th>No</th>

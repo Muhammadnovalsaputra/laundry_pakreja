@@ -1,59 +1,106 @@
 <?php
-// Pastikan path config sesuai dengan struktur foldermu
-include '../config/config.php';
+
+include './config/config.php';
 
 $rows = [];
 $total_income = 0;
 $start_date = "";
 $end_date = "";
 
-// Cek apakah tombol filter diklik
+
 if (isset($_GET['filter'])) {
     $start_date = $_GET['start_date'];
     $end_date = $_GET['end_date'];
 
-    // Query ambil data berdasarkan range tanggal
-    // Kita ambil juga nama customer menggunakan JOIN
-    $query = mysqli_query($config, "SELECT c.name as `name`, tr.* FROM trans_orders tr 
-                                LEFT JOIN customers c ON c.id = tr.customer_id
-                                WHERE tr.order_end_date BETWEEN '$start_date' AND '$end_date'
-                                ORDER BY tr.id DESC");
-    
-    $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
+    // 1. QUERY DATA TRANSAKSI (Perbaikan: Menggunakan Prepared Statement untuk Keamanan)
+    $sql_data = "SELECT c.name as `name`, tr.* FROM trans_orders tr 
+                 LEFT JOIN customers c ON c.id = tr.customer_id
+                 WHERE tr.order_end_date BETWEEN ? AND ?
+                 ORDER BY tr.id DESC";
 
-    // Hitung total pendapatan dari hasil filter
-    foreach ($rows as $r) {
-        $total_income += $r['order_total'];
+    $stmt_data = mysqli_prepare($config, $sql_data);
+
+    if ($stmt_data) {
+        // 'ss' menandakan dua parameter adalah string (sesuai untuk tipe data tanggal)
+        mysqli_stmt_bind_param($stmt_data, "ss", $start_date, $end_date);
+        mysqli_stmt_execute($stmt_data);
+
+        $result_data = mysqli_stmt_get_result($stmt_data);
+        $rows = mysqli_fetch_all($result_data, MYSQLI_ASSOC);
+    }
+
+    // 2. QUERY GRAND TOTAL (Perbaikan: Menggunakan SUM() pada SQL untuk Efisiensi)
+    $sql_total = "SELECT SUM(order_total) as total_pendapatan FROM trans_orders 
+                  WHERE order_end_date BETWEEN ? AND ?";
+
+    $stmt_total = mysqli_prepare($config, $sql_total);
+
+    if ($stmt_total) {
+        mysqli_stmt_bind_param($stmt_total, "ss", $start_date, $end_date);
+        mysqli_stmt_execute($stmt_total);
+
+        $result_total = mysqli_stmt_get_result($stmt_total);
+        $data_total = mysqli_fetch_assoc($result_total);
+
+        $total_income = $data_total['total_pendapatan'] ?? 0;
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Penjualan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    
+
     <style>
         @media print {
-            .no-print { display: none !important; }
-            .card { border: none !important; }
+            .no-print {
+
+                display: none !important;
+            }
+
+            .card {
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+
+            .container {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+
+
+            .col-md-9,
+            .col-lg-10 {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+            }
+
         }
     </style>
 </head>
+
 <body>
-    <div class="container mt-4">
+    <div class="container mt-4 ">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Laporan Penjualan</h4>
-                <a href="index.php?page=order" class="btn btn-secondary btn-sm no-print">Kembali</a>
+            </div>
+            <div>
+                <h5 class="text-center m-3 text-muted">Laundry Simple</h5>
             </div>
             <div class="card-body">
-                
+
                 <form action="" method="GET" class="row g-3 mb-4 no-print border p-2 rounded bg-light">
+                    <input type="hidden" name="page" value="laporan">
                     <div class="col-auto d-flex align-items-center">
                         <label class="col-form-label me-2">Dari:</label>
                         <input type="date" name="start_date" class="form-control" value="<?php echo $start_date ?>" required>
@@ -66,7 +113,7 @@ if (isset($_GET['filter'])) {
                         <button type="submit" name="filter" class="btn btn-primary">
                             <i class="bi bi-search"></i> Tampilkan
                         </button>
-                        <?php if(isset($_GET['filter'])): ?>
+                        <?php if (isset($_GET['filter'])): ?>
                             <button type="button" onclick="window.print()" class="btn btn-success ms-1">
                                 <i class="bi bi-printer"></i> Print Laporan
                             </button>
@@ -94,7 +141,7 @@ if (isset($_GET['filter'])) {
                                 <tr>
                                     <td><?php echo $key + 1 ?></td>
                                     <td><?php echo $v['order_code'] ?></td>
-                                    <td><?php echo $v['order_end_date'] ?></td>
+                                    <td><?php echo date('d-m-Y', strtotime($v['order_end_date'])) ?></td>
                                     <td><?php echo $v['name'] ?? 'Umum' ?></td>
                                     <td class="text-end">Rp. <?php echo number_format($v['order_total'], 0, ',', '.') ?></td>
                                 </tr>
@@ -107,7 +154,7 @@ if (isset($_GET['filter'])) {
                             </tr>
                         </tfoot>
                     </table>
-                
+
                 <?php elseif (isset($_GET['filter'])): ?>
                     <div class="text-center p-5 text-muted">
                         <i class="bi bi-inbox fs-1"></i>
@@ -124,4 +171,5 @@ if (isset($_GET['filter'])) {
         </div>
     </div>
 </body>
+
 </html>

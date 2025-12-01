@@ -18,7 +18,7 @@ let cart = [];
 function addToCart() {
   const id = document.getElementById("modal_id").value;
   const name = document.getElementById("modal_name").value;
-  const price = parseFloat(document.getElementById("modal_price").value); //10+10 = 1010 a = reza b=ibrahim nama = a+b
+  const price = parseFloat(document.getElementById("modal_price").value);
   const qty = parseFloat(document.getElementById("modal_qty").value);
 
   const existing = cart.find((item) => item.id == id);
@@ -30,7 +30,7 @@ function addToCart() {
       id,
       name,
       price,
-      qty
+      qty,
     });
   }
   renderCart();
@@ -72,12 +72,12 @@ function renderCart() {
   });
   updateTotal();
 }
-//hapus item dari cart
+
 function removeItem(id) {
   cart = cart.filter((p) => p.id != id);
   renderCart();
 }
-//mengatur qty di cart
+
 function changeQty(id, x) {
   const item = cart.find((p) => p.id == id);
   if (!item) {
@@ -87,65 +87,79 @@ function changeQty(id, x) {
   if (item.qty <= 0) {
     alert("minimum harus 1 product");
     item.qty += 1;
-    // cart = filter((p) => p.id != id);
   }
   renderCart();
 }
 
 function updateTotal() {
- const subtotal  = cart.reduce((sum, item) => sum + parseFloat(item.price) * parseFloat(item.qty), 0);
-  // const subtotal  = price * qty;
-  // percent / 100 = 0.1
-  const taxValue  = document.getElementById('tax_id').value;
-  let tax         = taxValue / 100;
-  tax             = subtotal * tax;
-  const total     = tax + subtotal;
+  const subtotal = cart.reduce(
+    (sum, item) => sum + parseFloat(item.price) * parseFloat(item.qty),
+    0
+  );
 
-  document.getElementById('subtotal').textContent = `Rp. ${subtotal.toLocaleString()}`;
-  document.getElementById('tax').textContent      = `Rp. ${tax.toLocaleString()}`;
-  document.getElementById('total').textContent    = `Rp. ${total.toLocaleString()}`;
+  const taxValue = document.getElementById("tax_id").value;
+  let tax = taxValue / 100;
+  tax = subtotal * tax;
+  const total = tax + subtotal;
 
-  document.getElementById('subtotal_value').value = subtotal;
-  document.getElementById('tax_value').value      = tax;
-  document.getElementById('total_value').value    = total;
+  document.getElementById(
+    "subtotal"
+  ).textContent = `Rp. ${subtotal.toLocaleString()}`;
+  document.getElementById("tax").textContent = `Rp. ${tax.toLocaleString()}`;
+  document.getElementById(
+    "total"
+  ).textContent = `Rp. ${total.toLocaleString()}`;
+
+  document.getElementById("subtotal_value").value = subtotal;
+  document.getElementById("tax_value").value = tax;
+  document.getElementById("total_value").value = total;
 }
-document.getElementById('clearCart').addEventListener('click', function (e) {
+document.getElementById("clearCart").addEventListener("click", function (e) {
   cart = [];
   renderCart();
 });
 
-
 async function processPayment() {
- if (cart.length === 0) {
-    alert('Cart Masih Kosong');
+  if (cart.length === 0) {
+    alert("Cart Masih Kosong");
     return;
   }
-  const order_code  = document.querySelector('.orderNumber').textContent.trim();
-  const subtotal    = document.querySelector('#subtotal_value').value.trim();
-  const tax         = document.querySelector('#tax_value').value.trim();
-  const grandTotal  = document.querySelector('#total_value').value.trim();
-  const pay         = document.getElementById("pay").value;
-  const change      = document.getElementById("change").value;
-  const customer_id = parseInt(document.getElementById('customer_id').value);
-  const end_date    = document.getElementById('end_date').value;
+  const order_code = document.querySelector(".orderNumber").textContent.trim();
+  const subtotal = document.querySelector("#subtotal_value").value.trim();
+  const tax = document.querySelector("#tax_value").value.trim();
+  const grandTotal = document.querySelector("#total_value").value.trim();
+  const pay = document.getElementById("pay").value;
+  const change = document.getElementById("change").value;
+  const customer_id = parseInt(document.getElementById("customer_id").value);
+  const end_date = document.getElementById("end_date").value;
 
   try {
-    const res = await fetch('add-order.php?payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cart, order_code, subtotal, tax, grandTotal, pay, change, customer_id, end_date }),
+    const res = await fetch("add-order.php?payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cart,
+        order_code,
+        subtotal,
+        tax,
+        grandTotal,
+        pay,
+        change,
+        customer_id,
+        end_date,
+      }),
     });
     const data = await res.json();
-    if (data.status == 'success') {
-      alert('Transaction success');
-      window.location.href = 'print.php?id=' + data.order_id;
+    if (data.status == "success") {
+      alert("Transaction success");
+      window.location.href = "print.php?id=" + data.order_id;
     } else {
-      alert('Transaction failed', data.message);
+      alert("Transaction failed", data.message);
     }
     // const data = await res.json();
   } catch (error) {
-    alert('Ups! Transaction failed!');
-    console.log('error', error);
+    alert("Ups! Transaction failed!");
+    console.log("error", error);
   }
 }
 

@@ -2,22 +2,19 @@
 session_start();
 require_once 'config/config.php';
 
-// jika tombol login di klik/pencet
+
 if (isset($_POST['login'])) {
-    $email    = trim($_POST['email']); //trim: handle spasi / menghapus spasi
+    $email    = trim($_POST['email']);
     $password = trim($_POST['password']);
     $sha1 = sha1($password);
 
     $query    = mysqli_query($config, "SELECT * FROM users WHERE email='$email'");
 
-    // num_rows : function untuk mengecek di dalam table data query ada apa engga
-    // jika ada/berhasil akan menghasilkan nilai 1 sebaliknya akan 0
+
 
     if (mysqli_num_rows($query) > 0) {
-        // mengambil data hasil query di dalam table
+
         $user = mysqli_fetch_assoc($query);
-        // jika password yang di input user sama dengan yang ada ditable
-        // === : a == a, a = 1 a(var)===a(var)
         if ($sha1 === $user['password']) {
             $_SESSION['ID'] = $user['id'];
             $_SESSION['NAME'] = $user['name'];
@@ -37,7 +34,7 @@ if (isset($_POST['login'])) {
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Login | Laundry PPKD JP</title>
+    <title>Login | Laundry Simple</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -92,6 +89,7 @@ if (isset($_POST['login'])) {
                                 <div class="card-body">
 
                                     <div class="pt-4 pb-2">
+                                        <h4 class="text-center"><i class="bi bi-basket3"></i></h4>
                                         <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
                                         <p class="text-center small">Enter your username & password to login</p>
                                     </div>
@@ -112,15 +110,8 @@ if (isset($_POST['login'])) {
                                             <input type="password" name="password" class="form-control" id="yourPassword" required>
                                             <div class="invalid-feedback">Please enter your password!</div>
                                         </div>
-
                                         <div class="col-12">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                                <label class="form-check-label" for="rememberMe">Remember me</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit" name="login">Login</button>
+                                            <button class="btn btn-danger w-100" type="submit" name="login">Login</button>
                                         </div>
 
                                     </form>

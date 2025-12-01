@@ -24,17 +24,17 @@ if (isset($_GET['payment'])) {
     // transaction
     mysqli_begin_transaction($config);
     $data = json_decode(file_get_contents('php://input'), true);
- 
+
     $cart = $data["cart"];
     $orderCode = $data['order_code'];
     $subtotal  = $data['subtotal'];
     $tax = $data['tax'];
-    $orderAmounth = $data['grandTotal'];
+    $orderAmounth =$data['grandTotal'];
     $customer_id = $data['customer_id'];
     $end_date = $data['end_date'];
     $orderPay = $data['pay'];
     $orderChange = $data['change'];
-    $orderStatus = 1;
+    $orderStatus = 0;
 
     try {
         $insertOrder = mysqli_query($config, "INSERT INTO trans_orders (order_code, order_end_date,  
@@ -105,6 +105,8 @@ $order_code = "ORD-" . date('dmy') . str_pad($nextId, 4, "0", STR_PAD_LEFT);
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="../assets/css/reza.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
@@ -124,8 +126,8 @@ $order_code = "ORD-" . date('dmy') . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                                     Customer Name
                                 </label>
                                 <select name="customer_id" id="customer_id"
-                                    class="form-control" onchange="selectCustomers()">
-                                    <option value="">Select One</option>
+                                    class="form-control js-example-basic-single" name="state" onchange="selectCustomers()">
+                                    <option value="AL">Select One</option>
                                     <?php foreach ($rowCustomers as $customer): ?>
                                         <option data-phone="<?php echo $customer['phone'] ?>"
                                             value="<?php echo $customer['id'] ?>">
@@ -244,12 +246,12 @@ $order_code = "ORD-" . date('dmy') . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                             <input type="hidden" id="total_value">
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                        <span>Pay :</span>
-                        <input type="number" id="pay" class="form-control w-50" placeholder="Enter the amount" oninput="calculateChange()" style="background-color: #BBDEFB;">
+                            <span>Pay :</span>
+                            <input type="number" id="pay" class="form-control w-50" placeholder="Enter the amount" oninput="calculateChange()" style="background-color: #BBDEFB;">
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Change:</span>
-                            <span ></span>
+                            <span></span>
                             <input type="number" class="form-control border-0 bg-body-tertiary" id="change" readonly>
                         </div>
                     </div>
@@ -275,8 +277,13 @@ $order_code = "ORD-" . date('dmy') . str_pad($nextId, 4, "0", STR_PAD_LEFT);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
 
-    <script src="../assets/js/reza.js"></script>
+    <script src="../assets/js/noval.js"></script>
 
 
 </body>

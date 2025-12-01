@@ -11,8 +11,8 @@ if (isset($_POST['simpan'])) {
     header("Location:?page=level");
 }
 if (isset($_POST['update'])) {
-    $name = $_POST['na$name'];
-    $update = mysqli_query($config, "UPDATE levels SET na$name='$name' WHERE id = $id");
+    $name = $_POST['name'];
+    $update = mysqli_query($config, "UPDATE levels SET name='$name' WHERE id = $id");
 
     header('location:?page=level');
 }

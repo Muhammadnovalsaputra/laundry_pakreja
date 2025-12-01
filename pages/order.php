@@ -12,6 +12,14 @@ if (isset($_GET['delete'])) {
         header("location:?page=order");
     }
 }
+
+if (isset($_GET['pickup'])) {
+    $id = $_GET['pickup'];
+    mysqli_query($config, "UPDATE trans_orders SET order_status = 1 WHERE id = $id");
+    header('location:?page=order');
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,8 +36,7 @@ if (isset($_GET['delete'])) {
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Data Order</h3>
-                    <div class="d-flex justify-content-between p-2">
-                        <a href="pos/report.php" class="btn btn-primary">Report</a>
+                    <div class="d-flex justify-content-end p-2">
                         <a href="pos/add-order.php" class="btn btn-primary">Add Order</a>
                     </div>
                     <table class="table table-bordered">
@@ -51,11 +58,18 @@ if (isset($_GET['delete'])) {
                                 <td><?php echo $key + 1 ?></td>
                                 <td><?php echo $v['order_code'] ?></td>
                                 <td><?php echo $v['order_end_date'] ?></td>
-                                <td><?php echo $v['order_total'] ?></td>
-                                <td><?php echo $v['order_tax'] ?></td>
-                                <td><?php echo $v['order_pay'] ?></td>
-                                <td><?php echo $v['order_change'] ?></td>
-                                <td><?php echo $v['order_status'] ?></td>
+                                <td>Rp. <?php echo number_format($v['order_total'])  ?></td>
+                                <td>Rp. <?php echo number_format($v['order_tax'])  ?></td>
+                                <td>Rp. <?php echo number_format($v['order_pay'])  ?></td>
+                                <td>Rp. <?php echo number_format($v['order_change'])  ?></td>
+                                <td>
+                                    <?php if ($v['order_status'] == 0) { ?>
+                                        <a href="?page=order&pickup=<?php echo $v['id'] ?>" class="btn btn-info btn-sm" onclick="return confirm('Sudah Diambil?')">
+                                            <i class="bi bi-check-circle p-2">Belum di ambil</i>
+                                        </a>
+                                    <?php } else { ?>
+                                        <span class="badge bg-success">Sudah diambil</span> <?php } ?>
+                                </td>
                                 <td>
                                     <a href="pos/print.php?id=<?php echo $v['id'] ?>" class="btn btn-success btn-sm">
                                         <i class="bi bi-printer"></i>
